@@ -1,5 +1,6 @@
 use crate::cli_options::CliOptions;
 use crate::configuration::{load_configuration, LoadedConfiguration};
+use crate::execute::ReportMode;
 use crate::vcs::store_path_to_ignore_from_vcs;
 use crate::{execute_mode, CliDiagnostic, CliSession, Execution, TraversalMode};
 use biome_service::workspace::{FixFileMode, UpdateSettingsParams};
@@ -82,11 +83,20 @@ pub(crate) fn lint(
             configuration: fs_configuration,
         })?;
 
-    execute_mode(
-        Execution::new(TraversalMode::Lint {
+    let execution = if cli_options.json {
+        Execution::with_report(TraversalMode::Lint {
+                fix_file_mode,
+                stdin,
+            }, ReportMode::Json)
+    } else {
+Execution::new(TraversalMode::Lint {
             fix_file_mode,
             stdin,
-        }),
+        })
+    };
+
+    execute_mode(
+        execution,
         session,
         &cli_options,
         paths,
