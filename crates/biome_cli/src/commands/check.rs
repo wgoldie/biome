@@ -1,7 +1,7 @@
 use crate::cli_options::CliOptions;
 use crate::configuration::{load_configuration, LoadedConfiguration};
-use crate::vcs::store_path_to_ignore_from_vcs;
 use crate::execute::ReportMode;
+use crate::vcs::store_path_to_ignore_from_vcs;
 use crate::{execute_mode, CliDiagnostic, CliSession, Execution, TraversalMode};
 use biome_service::configuration::organize_imports::OrganizeImports;
 use biome_service::configuration::{FormatterConfiguration, LinterConfiguration};
@@ -115,21 +115,19 @@ pub(crate) fn check(
             configuration: fs_configuration,
         })?;
     let execution = if cli_options.json {
-        Execution::with_report(TraversalMode::Check {
+        Execution::with_report(
+            TraversalMode::Check {
                 fix_file_mode,
                 stdin,
-            }, ReportMode::Json)
+            },
+            ReportMode::Json,
+        )
     } else {
-Execution::new(TraversalMode::Check{
+        Execution::new(TraversalMode::Check {
             fix_file_mode,
             stdin,
         })
     };
 
-    execute_mode(
-        execution,
-        session,
-        &cli_options,
-        paths,
-    )
+    execute_mode(execution, session, &cli_options, paths)
 }

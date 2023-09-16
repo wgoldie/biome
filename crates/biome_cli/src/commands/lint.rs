@@ -84,21 +84,19 @@ pub(crate) fn lint(
         })?;
 
     let execution = if cli_options.json {
-        Execution::with_report(TraversalMode::Lint {
+        Execution::with_report(
+            TraversalMode::Lint {
                 fix_file_mode,
                 stdin,
-            }, ReportMode::Json)
+            },
+            ReportMode::Json,
+        )
     } else {
-Execution::new(TraversalMode::Lint {
+        Execution::new(TraversalMode::Lint {
             fix_file_mode,
             stdin,
         })
     };
 
-    execute_mode(
-        execution,
-        session,
-        &cli_options,
-        paths,
-    )
+    execute_mode(execution, session, &cli_options, paths)
 }
